@@ -1,7 +1,25 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, MapPin, DollarSign, Briefcase, Building2, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 
 export default function JobBoard() {
+  const reduce = useReducedMotion();
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+    },
+  };
+
+  const itemAnim = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
+  };
+
   const categories = [
     "Tất cả", "Pháp lý", "Tài chính", "Vận hành", "Nhân sự", "Kinh doanh", "Truyền thông", "Công nghệ"
   ];
@@ -23,7 +41,7 @@ export default function JobBoard() {
       date: "27/09/2026",
       color: "border-blue-500",
       textCol: "text-blue-600",
-      bgCol: "bg-blue-50"
+      bgCol: "bg-blue-50 border-blue-100"
     },
     {
       id: 2,
@@ -37,7 +55,7 @@ export default function JobBoard() {
       date: "27/09/2026",
       color: "border-indigo-500",
       textCol: "text-indigo-600",
-      bgCol: "bg-indigo-50"
+      bgCol: "bg-indigo-50 border-indigo-100"
     },
     {
       id: 3,
@@ -51,7 +69,7 @@ export default function JobBoard() {
       date: "27/09/2026",
       color: "border-purple-500",
       textCol: "text-purple-600",
-      bgCol: "bg-purple-50"
+      bgCol: "bg-purple-50 border-purple-100"
     },
     {
       id: 4,
@@ -65,7 +83,7 @@ export default function JobBoard() {
       date: "27/09/2026",
       color: "border-emerald-500",
       textCol: "text-emerald-600",
-      bgCol: "bg-emerald-50"
+      bgCol: "bg-emerald-50 border-emerald-100"
     },
     {
       id: 5,
@@ -79,23 +97,23 @@ export default function JobBoard() {
       date: "27/09/2026",
       color: "border-sky-500",
       textCol: "text-sky-600",
-      bgCol: "bg-sky-50"
+      bgCol: "bg-sky-50 border-sky-100"
     }
   ];
 
   return (
-    <section className="bg-slate-50 pt-8 pb-24">
+    <section className="bg-slate-50 pt-8 pb-32">
       
-      {/* Filters Overlay (Sticks to top conceptually, overlapping hero a bit if we used negative margin, but keeping it simple here) */}
-      <div className="border-b border-slate-200 bg-white/50 backdrop-blur-md sticky top-0 z-40">
-        <div className="mh-container py-4 flex items-center gap-3 overflow-x-auto scrollbar-hide">
+      {/* Filters Overlay */}
+      <div className="border-b border-slate-200 bg-white/70 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
+        <div className="mh-container py-5 flex items-center gap-3 md:gap-4 overflow-x-auto scrollbar-hide">
           {categories.map((cat, idx) => (
             <button 
               key={idx}
-              className={`whitespace-nowrap px-6 py-2.5 rounded-full text-[13px] font-bold transition-all ${
+              className={`whitespace-nowrap px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-300 ${
                 idx === 0 
-                ? "bg-[var(--mh-navy)] text-white shadow-md" 
-                : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                ? "bg-[var(--mh-navy)] text-white shadow-md hover:shadow-lg hover:-translate-y-0.5" 
+                : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 hover:-translate-y-0.5"
               }`}
             >
               {cat}
@@ -104,35 +122,38 @@ export default function JobBoard() {
         </div>
       </div>
 
-      <div className="mh-container mt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-10">
+      <div className="mh-container mt-16 md:mt-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-12 lg:gap-16">
           
           {/* Sidebar */}
           <aside className="hidden lg:block">
-            <div className="sticky top-32 space-y-8">
+            <div className="sticky top-32 space-y-10">
               
               {/* Smart Search Box */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                <h3 className="text-[11px] font-bold tracking-widest text-blue-600 uppercase mb-4">
+              <div className="bg-white rounded-[2rem] p-8 shadow-xl shadow-black/5 border border-slate-100">
+                <h3 className="text-[11px] font-bold tracking-[0.2em] text-blue-600 uppercase mb-5 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                   Tìm việc thông minh
                 </h3>
-                <h4 className="text-[var(--mh-navy)] font-extrabold text-xl leading-tight mb-4">
+                <h4 className="text-[var(--mh-navy)] font-extrabold text-2xl leading-tight mb-5">
                   Kết nối với đúng cơ hội, đúng doanh nghiệp.
                 </h4>
-                <p className="text-slate-500 text-sm leading-relaxed">
-                  Mỗi tin tuyển dụng được cập nhật trực tiếp bởi đội ngũ phụ trách tuyển dụng.
+                <p className="text-slate-500 text-[15px] font-medium leading-relaxed">
+                  Mỗi tin tuyển dụng được cập nhật trực tiếp bởi đội ngũ phụ trách tuyển dụng của Matrix Holding.
                 </p>
               </div>
 
               {/* Companies List */}
-              <div>
-                <h3 className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-4">
+              <div className="pl-2">
+                <h3 className="text-[11px] font-bold tracking-[0.2em] text-slate-400 uppercase mb-6">
                   Doanh nghiệp đang hiển thị
                 </h3>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   {companies.map((comp, idx) => (
-                    <li key={idx} className="flex items-center gap-3 text-slate-700 text-[14px] font-bold hover:text-blue-600 cursor-pointer transition-colors">
-                      <Building2 size={16} className="text-[var(--mh-navy)]" />
+                    <li key={idx} className="flex items-center gap-4 text-slate-700 text-[15px] font-bold hover:text-blue-600 cursor-pointer transition-colors group">
+                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                        <Building2 size={16} className="text-[var(--mh-navy)] group-hover:text-blue-600 transition-colors" />
+                      </div>
                       {comp}
                     </li>
                   ))}
@@ -143,88 +164,101 @@ export default function JobBoard() {
 
           {/* Job List */}
           <div>
-            <div className="flex justify-between items-end mb-6 border-b border-slate-200 pb-4">
-              <p className="text-slate-500 text-sm">
-                Hiển thị <strong className="text-[var(--mh-navy)]">8</strong> trong số <strong className="text-[var(--mh-navy)]">13</strong> vị trí
+            <div className="flex justify-between items-end mb-8 border-b border-slate-200 pb-5">
+              <p className="text-slate-500 text-sm font-medium">
+                Hiển thị <strong className="text-[var(--mh-navy)] text-base">8</strong> trong số <strong className="text-[var(--mh-navy)] text-base">13</strong> vị trí
               </p>
-              <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">Mới nhất</span>
+              <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase bg-white px-3 py-1 rounded-full border border-slate-200">
+                Mới nhất
+              </span>
             </div>
 
-            <div className="space-y-4 mb-12">
+            <motion.div 
+              variants={container}
+              initial={reduce ? "show" : "hidden"}
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
+              className="space-y-5 mb-16"
+            >
               {jobs.map((job) => (
-                <div key={job.id} className={`bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-slate-100 overflow-hidden flex flex-col md:flex-row group`}>
+                <motion.div variants={itemAnim} key={job.id} className={`bg-white rounded-[1.5rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden flex flex-col md:flex-row group`}>
                   
                   {/* Left Accent */}
-                  <div className={`w-1.5 shrink-0 bg-slate-100 border-l-[6px] ${job.color} transition-colors group-hover:border-l-[8px]`} />
+                  <div className={`w-2 shrink-0 bg-slate-100 border-l-[6px] ${job.color} transition-colors group-hover:border-l-[8px]`} />
                   
                   <div className="p-6 md:p-8 flex-1 flex flex-col justify-between">
                     
                     {/* Top Row: Avatar & Title */}
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className={`w-12 h-12 rounded-full ${job.bgCol} ${job.textCol} font-extrabold flex items-center justify-center shrink-0`}>
+                    <div className="flex items-start gap-5 mb-6">
+                      <div className={`w-14 h-14 rounded-2xl border ${job.bgCol} ${job.textCol} font-black flex items-center justify-center shrink-0 text-xl`}>
                         {job.code}
                       </div>
                       <div className="flex-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
-                          <h3 className="font-bold text-[19px] text-[var(--mh-navy)] group-hover:text-blue-600 transition-colors">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                          <h3 className="font-extrabold text-[20px] text-[var(--mh-navy)] group-hover:text-blue-600 transition-colors">
                             <Link href="#">{job.title}</Link>
                           </h3>
-                          <span className="inline-flex shrink-0 px-3 py-1 bg-blue-50 text-blue-600 text-[11px] font-bold rounded-full">
+                          <span className="inline-flex shrink-0 px-3 py-1 bg-blue-50 border border-blue-100 text-blue-600 text-[11px] font-bold rounded-full uppercase tracking-widest">
                             Toàn thời gian
                           </span>
                         </div>
-                        <p className="font-bold text-[14px] text-slate-500">{job.company}</p>
+                        <p className="font-bold text-[15px] text-slate-500">{job.company}</p>
                       </div>
                     </div>
 
                     {/* Tags */}
                     <div className="flex flex-wrap gap-3 mb-6">
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-600 rounded text-[13px] font-medium">
-                        <MapPin size={14} className="text-slate-400" /> {job.location}
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 text-slate-600 rounded-lg text-[13px] font-bold border border-slate-100">
+                        <MapPin size={16} className="text-slate-400" /> {job.location}
                       </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50/50 text-amber-700 rounded text-[13px] font-medium">
-                        <DollarSign size={14} className="text-amber-500" /> {job.salary}
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-[13px] font-bold border border-amber-100">
+                        <DollarSign size={16} className="text-amber-500" /> {job.salary}
                       </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 rounded text-[13px] font-medium">
-                        <Briefcase size={14} className="text-purple-500" /> {job.category}
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-50 text-purple-700 rounded-lg text-[13px] font-bold border border-purple-100">
+                        <Briefcase size={16} className="text-purple-500" /> {job.category}
                       </div>
                     </div>
 
                     {/* Excerpt */}
-                    <p className="text-slate-600 text-[14px] leading-relaxed mb-6">
+                    <p className="text-slate-600 text-[15px] font-medium leading-relaxed mb-6">
                       {job.excerpt}
                     </p>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                      <span className="text-slate-400 text-[12px]">Đăng ngày {job.date}</span>
-                      <Link href="#" className="flex items-center gap-2 text-[var(--mh-navy)] font-bold text-sm group-hover:text-blue-600 transition-colors">
-                        Xem chi tiết <ArrowRight size={16} />
+                    <div className="flex items-center justify-between pt-5 border-t border-slate-100">
+                      <span className="text-slate-400 font-medium text-[13px]">Đăng ngày {job.date}</span>
+                      <Link href="#" className="flex items-center gap-2 text-[var(--mh-navy)] font-bold text-sm tracking-wide uppercase group-hover:text-blue-600 transition-colors">
+                        Xem chi tiết <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                       </Link>
                     </div>
 
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-center gap-2">
-              <button className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-400 hover:bg-white hover:text-slate-700 transition-colors border border-transparent hover:border-slate-200">
-                <ChevronLeft size={18} />
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="flex items-center justify-center gap-2"
+            >
+              <button className="w-12 h-12 rounded-full flex items-center justify-center text-slate-400 bg-white hover:text-slate-700 hover:bg-slate-100 transition-colors border border-slate-200">
+                <ChevronLeft size={20} />
               </button>
               
-              <button className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm bg-[var(--mh-navy)] text-white shadow-md">
+              <button className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-[var(--mh-navy)] text-white shadow-lg border border-[var(--mh-navy)]">
                 1
               </button>
-              <button className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm text-slate-600 hover:bg-white transition-colors border border-transparent hover:border-slate-200">
+              <button className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm text-slate-600 bg-white hover:bg-slate-100 transition-colors border border-slate-200">
                 2
               </button>
               
-              <button className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-600 hover:bg-white transition-colors border border-transparent hover:border-slate-200">
-                <ChevronRight size={18} />
+              <button className="w-12 h-12 rounded-full flex items-center justify-center text-slate-600 bg-white hover:bg-slate-100 transition-colors border border-slate-200">
+                <ChevronRight size={20} />
               </button>
-            </div>
+            </motion.div>
 
           </div>
         </div>

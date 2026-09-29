@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 const NAV_LINKS = [
   { label: "Trang chủ", href: "/" },
@@ -31,15 +32,11 @@ export default function Navbar({ theme = "dark" }: { theme?: "light" | "dark" })
       className={[
         "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300",
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
-          : "bg-transparent",
+          ? "bg-white/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.1)] py-4"
+          : "bg-transparent py-5",
       ].join(" ")}
-      style={{ height: "80px" }}
     >
-      <div
-        className="mh-container flex h-full items-center justify-between"
-        style={{ maxWidth: 1280 }}
-      >
+      <div className="mh-container flex items-center justify-between">
         {/* Logo */}
         <Link
           href="/"
@@ -52,14 +49,14 @@ export default function Navbar({ theme = "dark" }: { theme?: "light" | "dark" })
             width={140}
             height={36}
             className={[
-              "h-9 w-auto transition-all duration-300",
+              "h-8 sm:h-9 w-auto transition-all duration-300",
               !scrolled && theme === "dark" ? "brightness-0 invert" : "",
             ].join(" ")}
             priority
           />
           <span
             className={[
-              "text-[17px] font-bold tracking-tight transition-colors duration-300",
+              "text-[16px] sm:text-[18px] font-extrabold tracking-tight transition-colors duration-300",
               scrolled || theme === "light" ? "text-slate-900" : "text-white",
             ].join(" ")}
           >
@@ -68,15 +65,15 @@ export default function Navbar({ theme = "dark" }: { theme?: "light" | "dark" })
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-0" aria-label="Main navigation">
+        <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={[
-                "relative px-4 py-2 text-sm font-semibold transition-colors duration-200",
+                "relative px-4 py-2 text-[14px] font-bold tracking-wide transition-colors duration-200",
                 scrolled || theme === "light"
-                  ? "text-slate-600 hover:text-[rgb(9,46,86)]"
+                  ? "text-slate-600 hover:text-[var(--mh-navy)]"
                   : "text-white/85 hover:text-white",
               ].join(" ")}
             >
@@ -90,10 +87,11 @@ export default function Navbar({ theme = "dark" }: { theme?: "light" | "dark" })
           <Link
             href="/dang-nhap"
             className={[
-              "rounded-lg px-4 py-2.5 text-sm font-bold text-white transition-all duration-200",
-              "bg-[rgb(0,59,115)] hover:bg-[rgb(0,39,77)] shadow-sm",
+              "rounded-lg px-5 py-2.5 text-[14px] font-bold text-white transition-all duration-200 hover:-translate-y-[2px] active:translate-y-[1px]",
+              scrolled || theme === "light"
+                ? "bg-[var(--mh-navy)] hover:bg-[var(--mh-navy-dark)] hover:shadow-lg"
+                : "bg-white/20 backdrop-blur-md hover:bg-white/30 border border-white/20",
             ].join(" ")}
-            id="navbar-login-btn"
           >
             Đăng nhập
           </Link>
@@ -101,19 +99,18 @@ export default function Navbar({ theme = "dark" }: { theme?: "light" | "dark" })
 
         {/* Mobile Hamburger */}
         <button
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg"
+          className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg transition-colors duration-200"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
-          id="navbar-mobile-toggle"
         >
           {menuOpen ? (
             <X
-              size={22}
+              size={24}
               className={scrolled || theme === "light" ? "text-slate-900" : "text-white"}
             />
           ) : (
             <Menu
-              size={22}
+              size={24}
               className={scrolled || theme === "light" ? "text-slate-900" : "text-white"}
             />
           )}
@@ -121,31 +118,39 @@ export default function Navbar({ theme = "dark" }: { theme?: "light" | "dark" })
       </div>
 
       {/* Mobile Menu Dropdown */}
-      {menuOpen && (
-        <div className="md:hidden bg-white border-t border-slate-100 shadow-lg">
-          <nav className="mh-container py-4 flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="px-4 py-3 text-sm font-semibold text-slate-700 hover:text-[rgb(9,46,86)] hover:bg-slate-50 rounded-lg transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="mt-3 pt-3 border-t border-slate-100">
-              <Link
-                href="/dang-nhap"
-                className="block w-full text-center rounded-lg bg-[rgb(0,59,115)] px-4 py-3 text-sm font-bold text-white hover:bg-[rgb(0,39,77)] transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Đăng nhập
-              </Link>
-            </div>
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" as const }}
+            className="md:hidden bg-white border-t border-slate-100 shadow-xl overflow-hidden mt-4"
+          >
+            <nav className="mh-container py-4 flex flex-col gap-2">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-4 py-3 text-[15px] font-bold text-slate-700 hover:text-[var(--mh-navy)] hover:bg-slate-50 rounded-xl transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="mt-4 pt-4 border-t border-slate-100 px-4">
+                <Link
+                  href="/dang-nhap"
+                  className="flex w-full items-center justify-center rounded-xl bg-[var(--mh-navy)] px-4 py-3.5 text-[15px] font-bold text-white hover:bg-[var(--mh-navy-dark)] transition-colors active:translate-y-[1px]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Đăng nhập
+                </Link>
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

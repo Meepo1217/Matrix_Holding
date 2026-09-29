@@ -1,11 +1,33 @@
+"use client";
+
 import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
 
 export default function HeroSection() {
+  const reduce = useReducedMotion();
+
+  // Animation variants
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 24 },
+    show: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" as const } 
+    },
+  };
+
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden text-white"
-      style={{ minHeight: "100vh" }}
+      className="relative flex flex-col justify-center overflow-hidden text-white min-h-[100dvh]"
     >
       {/* Background Image */}
       <div
@@ -22,108 +44,105 @@ export default function HeroSection() {
         className="absolute inset-0 z-10"
         style={{
           background:
-            "linear-gradient(135deg, rgba(9,46,86,0.88) 0%, rgba(9,46,86,0.70) 50%, rgba(9,46,86,0.80) 100%)",
+            "linear-gradient(135deg, rgba(9,46,86,0.92) 0%, rgba(9,46,86,0.65) 50%, rgba(9,46,86,0.85) 100%)",
         }}
         aria-hidden="true"
       />
 
       {/* Content */}
-      <div
-        className="relative z-20 mh-container"
-        style={{ paddingTop: 160, paddingBottom: 100 }}
-      >
-        <div className="max-w-3xl">
+      <div className="relative z-20 mh-container pt-32 pb-24 md:pt-40 md:pb-32 w-full">
+        <motion.div 
+          className="max-w-[800px]"
+          variants={container}
+          initial={reduce ? "show" : "hidden"}
+          animate="show"
+        >
           {/* Eyebrow Badge */}
-          <div
-            className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 mb-6 backdrop-blur-sm"
-            style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.12em" }}
-          >
-            <span
-              className="inline-block h-1.5 w-1.5 rounded-full bg-blue-300"
-              aria-hidden="true"
-            />
-            <span className="uppercase tracking-widest text-white/90">
-              MATRIX HOLDING · VIỆT NAM
+          <motion.div variants={item} className="mb-8">
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 backdrop-blur-md text-[11px] font-bold uppercase tracking-[0.2em] text-white/90">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-400" aria-hidden="true" />
+              Matrix Holding · Việt Nam
             </span>
-          </div>
+          </motion.div>
 
           {/* Main Headline */}
-          <h1
-            className="font-extrabold tracking-tight text-white leading-tight mb-6"
-            style={{ fontSize: "clamp(36px, 5vw, 60px)", lineHeight: 1.1 }}
+          <motion.h1
+            variants={item}
+            className="font-extrabold tracking-tighter text-white mb-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05]"
           >
-            KIẾN TẠO HỆ SINH THÁI
-            <br />
-            <span className="text-blue-200">KINH DOANH ĐA NGÀNH</span>
-          </h1>
+            Kiến tạo hệ sinh thái <br className="hidden sm:block" />
+            <span className="text-blue-300">kinh doanh đa ngành</span>
+          </motion.h1>
 
           {/* Subtitle */}
-          <p
-            className="text-white/85 mb-10 leading-relaxed"
-            style={{ fontSize: 18, maxWidth: 620, lineHeight: 1.7 }}
+          <motion.p
+            variants={item}
+            className="text-white/80 mb-10 text-base md:text-lg lg:text-xl max-w-[65ch] leading-relaxed"
           >
             Chúng tôi tập trung xây dựng một môi trường kinh doanh hiệu quả,
             nơi các doanh nghiệp có thể tiếp cận với nhiều nguồn lực và mở ra
             cơ hội tiếp cận thị trường bền vững.
-          </p>
+          </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center gap-4">
+          <motion.div variants={item} className="flex flex-wrap items-center gap-4">
             <Link
               href="#gioi-thieu"
-              className="inline-flex items-center justify-center rounded-xl bg-white px-7 py-4 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-50 hover:shadow-xl"
-              style={{ color: "rgb(9,46,86)", minWidth: 200 }}
-              id="hero-cta-primary"
+              className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-3.5 text-[15px] font-bold text-[var(--mh-navy)] transition-all duration-200 hover:-translate-y-[2px] hover:bg-slate-50 hover:shadow-xl active:translate-y-[1px]"
             >
               Khám phá Matrix Holding
             </Link>
             <Link
               href="/he-sinh-thai"
-              className="inline-flex items-center justify-center rounded-xl border-2 border-white/50 bg-transparent px-7 py-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/10 hover:border-white hover:-translate-y-0.5"
-              id="hero-cta-secondary"
+              className="inline-flex items-center justify-center rounded-lg border border-white/40 bg-transparent px-8 py-3.5 text-[15px] font-bold text-white transition-all duration-200 hover:-translate-y-[2px] hover:bg-white/10 hover:border-white active:translate-y-[1px]"
             >
               Xem hệ sinh thái
             </Link>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Bottom stats bar */}
-        <div
-          className="mt-20 flex flex-wrap items-center gap-8 border-t border-white/15 pt-8"
-          style={{ maxWidth: 600 }}
-        >
-          {[
-            { value: "10+", label: "Năm kinh nghiệm" },
-            { value: "500+", label: "Doanh nghiệp đối tác" },
-            { value: "50+", label: "Chuyên gia tư vấn" },
-          ].map((stat) => (
-            <div key={stat.label} className="flex flex-col">
-              <span
-                className="font-extrabold text-white"
-                style={{ fontSize: 28, lineHeight: 1 }}
-              >
-                {stat.value}
-              </span>
-              <span
-                className="text-white/65 mt-1"
-                style={{ fontSize: 13, fontWeight: 500 }}
-              >
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </div>
+          {/* Bottom stats bar */}
+          <motion.div
+            variants={item}
+            className="mt-16 md:mt-24 flex flex-wrap items-center gap-x-12 gap-y-8 border-t border-white/20 pt-8"
+          >
+            {[
+              { value: "10+", label: "Năm kinh nghiệm" },
+              { value: "500+", label: "Doanh nghiệp đối tác" },
+              { value: "50+", label: "Chuyên gia tư vấn" },
+            ].map((stat) => (
+              <div key={stat.label} className="flex flex-col gap-1">
+                <span className="font-extrabold text-white text-3xl md:text-4xl tracking-tight leading-none">
+                  {stat.value}
+                </span>
+                <span className="text-white/60 text-sm font-semibold uppercase tracking-wider">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 animate-bounce">
-        <div className="flex flex-col items-center gap-1">
-          <div className="h-8 w-px bg-white/40" />
-          <span className="text-white/50" style={{ fontSize: 10, letterSpacing: "0.08em" }}>
-            CUỘN XUỐNG
-          </span>
-        </div>
-      </div>
+      {/* Scroll indicator (Spring animated) */}
+      <motion.div 
+        className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 flex flex-col items-center gap-2"
+        initial={{ y: -10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          y: {
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          },
+          opacity: { duration: 1, delay: 1 },
+        }}
+      >
+        <div className="h-10 w-[1px] bg-gradient-to-b from-white/0 via-white/50 to-white" />
+        <span className="text-white/50 text-[9px] font-bold uppercase tracking-[0.2em]">
+          Cuộn xuống
+        </span>
+      </motion.div>
     </section>
   );
 }
